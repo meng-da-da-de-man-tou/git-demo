@@ -90,7 +90,8 @@
 
   封装ajax请求模块
     安装: npm add axios
-    跨域问题: 配置proxy参数.
+    跨域问题: package.json中配置proxy参数.
+    proxy: "http://localhost:5000"
 
     import axios from 'axios'
     export default function ajax(url, data={}, type='GET') {
@@ -101,16 +102,61 @@
       }
     }
 
-    优化
+    优化:
+    import axios from 'axios'
+    import {message} from 'antd'
+    export default function ajax(url, data={}, type='GET') {
+        let promise
+        return new Promise((resolve, reject) => {
+            //1.执行异步ajax请求
+
+            if (type === 'GET') {
+                promise = axios.get(url, {params: data})
+            } else {
+                promise = axios.post(url, data)
+            }
 
 
+            //2.如果请求成功调用resolve(value)
+            //3.如果失败了提示异常信息
 
+            promise.then(response => {
+                resolve(response.data)
+            }).catch(error => {
+                message.error('请求出错了:' + error);
+            })
+
+            
+        })
+
+    }
 
   async/await
     作用: 简化promise对象的使用: 不再使用.then()来制定成功/失败的回调函数.
     以同步编码方式实现异步流程.
     哪里需要await
     在返回promise边大师的左侧写await:不要promise,而是要promise异步执行成功的value数据.
-    哪里需要async
+    哪里需要async：
     await所在行数定义的左侧
+
+  
+  store模块 -- 跨浏览器存储
+    相比于h5的原始存储,更兼容低版本浏览器更简洁.
+    // Store current user
+    store.set('user', { name:'Marcus' })
+
+    // Get current user
+    store.get('user')
+
+    // Remove current user
+    store.remove('user')
+
+    // Clear all keys
+    store.clearAll()
+
+    // Loop over all stored values
+    store.each(function(value, key) {
+      console.log(key, '==', value)
+    })
+
  -->

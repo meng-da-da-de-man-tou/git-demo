@@ -1,27 +1,39 @@
 import React, { Component } from 'react'
+import {Redirect} from 'react-router-dom'
 import './login.less'
-import logo from './images/logo-images.jpg'
-import { Form, Input, Button } from 'antd';
+import logo from '../../assets/images/logo-images.jpg'
+
+import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import {reqLogin} from '../../api'
+import memoryUtils from '../../utils/memoryUtils'
+import storageUtils from '../../utils/storageUtils'
 // 登录的路由组件
 export default class Login extends Component {
 
-    onFinish = async (values) => {
-        console.log('Success:', values);
+    onFinish = async values => {
+        // console.log('Success:', values);
         const {username, password} = values
         // reqLogin(username, password).then(response => {
         //     console.log(response)
         // }).catch(error => {
         //     console.log(error)
         // })
-            const response = await reqLogin(username, password)
-            console.log(response)
+            const result = await reqLogin(username, password)
+            if (result.status === 0) {
+                console.log(result)
+                memoryUtils.user = {username: result.data.username, id: result.data._id}
+                storageUtils.saveUser({username: result.data.username, id: result.data._id})
+                message.success('登录成功');
+                this.props.history.replace('/')
+            } else {
+                message.error(result.msg);
+            }
     }
 
-    onFinishFailed = () => {
-        console.log('Failed:');
-    }
+    // onFinishFailed = () => {
+    //     console.log('Failed:');
+    // }
 
     validatePwd = (_, value) => {
         if (value.length >= 6 && value.length <= 10) {
@@ -31,8 +43,9 @@ export default class Login extends Component {
         }
     }
 
-
     render() {
+        const user = memoryUtils.user
+        if (user && user.id) return <Redirect to="/" />
         return (
             <div className="login">
                 <header className="login-header">
@@ -45,7 +58,7 @@ export default class Login extends Component {
                         name="normal_login"
                         className="login-form"
                         onFinish={this.onFinish}
-                        onFinishFailed={this.onFinishFailed}
+                        // onFinishFailed={this.onFinishFailed}
                     >
                         <Form.Item name="username"
                             //声明式验证:直接使用别人定义好的验证规则
@@ -65,7 +78,7 @@ export default class Login extends Component {
                                 },
                                 {
                                     pattern: /^[A-Za-z\d_]+$/,
-                                    message: '自能包含字母数字下划线字符!',
+                                    message: '只能包含字母数字下划线字符!',
                                 }
                             ]}
                             initialValue="admin"

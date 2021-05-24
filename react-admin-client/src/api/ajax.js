@@ -23,7 +23,7 @@ export default function ajax(url, data={}, type='GET') {
         //3.如果失败了提示异常信息
 
         promise.then(response => {
-            resolve(response)
+            resolve(response.data)
         }).catch(error => {
             message.error('请求出错了:' + error);
         })
