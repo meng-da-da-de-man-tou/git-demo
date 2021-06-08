@@ -18,7 +18,6 @@ export default function ajax(url, data={}, type='GET') {
             promise = axios.post(url, data)
         }
 
-
         //2.如果请求成功调用resolve(value)
         //3.如果失败了提示异常信息
 

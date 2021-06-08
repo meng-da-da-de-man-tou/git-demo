@@ -125,8 +125,6 @@
             }).catch(error => {
                 message.error('请求出错了:' + error);
             })
-
-            
         })
 
     }
@@ -135,9 +133,9 @@
     作用: 简化promise对象的使用: 不再使用.then()来制定成功/失败的回调函数.
     以同步编码方式实现异步流程.
     哪里需要await
-    在返回promise边大师的左侧写await:不要promise,而是要promise异步执行成功的value数据.
+    在返回promise函数的左侧写await:不要promise,而是要promise异步执行成功的value数据.
     哪里需要async：
-    await所在行数定义的左侧
+    await所在函数定义的左侧
 
   
   store模块 -- 跨浏览器存储
@@ -159,4 +157,38 @@
       console.log(key, '==', value)
     })
 
+  jsonp 模块 --- 解决GET类型的ajax跨域请求问题
+    jsonp请求不是ajax请求,而是一般的get请求.
+    JsonP请求的原理: 
+    浏览器端: 动态生成<script>来请求后台借口.
+    定义好用于接收响应数据的函数,并将函数名通过请求参数提交给后台.
+    服务器端: 接收到请求处理产生结果数据后,返回一个函数调用的js代码,并将结果数据作为实参传入函数调用.
+    浏览器端: 收到响应自动执行函数调用的js代码,也就执行了提前定义好的回调函数,并得到了需要的结果数据.
+    import jsonp from 'jsonP'
+    export const reqWeather = (city) => {
+      return new Promise((resolve, reject) => {
+        const url = '请求地址'
+        jsonp(url, {}, (err, data) => {
+          console.log(err, data)
+
+          if(data.status === 'success') {
+          } else {
+            console.log(err)
+          }
+        })
+      })
+    }
+
+
+  分页列表
+    1.纯前端分页
+      请求获取数据: 一次性获取所有数据,翻页时不需要请求
+      请求接口: 不需要指定页码和每页显示数量
+      响应数据: 所有数据的数组
+    2.后端分页
+      请求获取数据: 每次只获取当前页面数据,翻页时需要发起请求
+      请求接口: 需要指定页码 + 每页数量
+      响应数据: 当前页数据的数组 + 总记录数
+    3.如何选择？
+      根据数据的数量多少来选择.
  -->

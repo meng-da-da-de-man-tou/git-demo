@@ -36,10 +36,10 @@ export default class Admin extends Component {
                     <LeftNav />
                 </Sider>
                 <Layout>
-                    <Header style={{color: '#fff'}}>
+                    <Header>
                         <Header />
                     </Header>
-                    <Content style={{backgroundColor: 'white'}}>
+                    <Content style={{margin: 20,backgroundColor: 'white'}}>
                         <Switch>
                             <Route path='/home' component={Home} />
                             <Route path='/category' component={Category} />
